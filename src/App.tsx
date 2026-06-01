@@ -196,10 +196,10 @@ export default function App() {
 
         {/* Desktop Quick Jump Tabs */}
         <nav className="hidden lg:flex items-center gap-6 text-[10px] uppercase tracking-[0.3em] font-bold text-slate-300">
-          <button onClick={() => scrollToSection(1)} className="hover:text-white transition-all cursor-pointer">Experience</button>
-          <button onClick={() => scrollToSection(2)} className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer">Portfolio</button>
-          <button onClick={() => scrollToSection(3)} className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer">Machinery</button>
-          <button onClick={() => scrollToSection(5)} className="opacity-50 text-white border border-white/20 hover:border-white px-4 py-1 -mt-1 transition-all rounded bg-white/5 cursor-pointer font-bold tracking-widest text-[9px]">Contact</button>
+          <button onClick={() => scrollToSection(1)} className="nav-link cursor-pointer">Experience</button>
+          <button onClick={() => scrollToSection(2)} className="nav-link opacity-60 hover:opacity-100 cursor-pointer">Portfolio</button>
+          <button onClick={() => scrollToSection(3)} className="nav-link opacity-60 hover:opacity-100 cursor-pointer">Machinery</button>
+          <button onClick={() => scrollToSection(5)} className="nav-link opacity-60 text-white border border-white/20 hover:border-white px-4 py-1.5 -mt-1 transition-all rounded bg-white/5 cursor-pointer font-bold tracking-widest text-[9px]">Contact</button>
         </nav>
 
         {/* Ambient construction sound toggle & live indicator */}
@@ -256,8 +256,11 @@ export default function App() {
       {/* SECTIONS CONDUIT FLOW - NATURAL SCROLL ON TOP */}
       
       {/* SECTION 1: HERO INTRO (CINEMATIC ENTRY) */}
-      <section className="h-screen w-full relative flex items-center px-4 sm:px-12 md:px-24">
-        <div className="w-full grid grid-cols-12 gap-6 items-center mt-12 sm:mt-20">
+      <section className="h-screen w-full relative flex items-center px-4 sm:px-12 md:px-24 overflow-hidden">
+        {/* Dark cinematic gradient behind text column */}
+        <div className="hero-overlay" />
+
+        <div className="w-full grid grid-cols-12 gap-6 items-center mt-12 sm:mt-20 z-10">
           
           {/* Aesthetic column left */}
           <div className="hidden md:flex col-span-1 flex-col items-center justify-center space-y-6">
@@ -271,29 +274,29 @@ export default function App() {
             </div>
           </div>
 
-          {/* Central Headline */}
-          <div className="col-span-12 md:col-span-8 space-y-4 sm:space-y-5">
+          {/* Central Headline & Backlit beam */}
+          <div className="col-span-12 md:col-span-8 space-y-4 sm:space-y-5 hero-content">
             <div className="flex items-center space-x-3 opacity-75">
               <span className="h-[1px] w-8 bg-white"></span>
               <span className="text-[10px] sm:text-xs uppercase tracking-[0.4em] font-bold text-slate-200">Establishing Foundations</span>
             </div>
 
-            <motion.h2
+            <motion.h1
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-4xl sm:text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter uppercase font-sans text-white"
+              className="hero-title"
             >
               Building the<br />
-              Future of<br />
-              <span className="text-stroke-white text-transparent">America</span>
-            </motion.h2>
+              <span>Future</span><br />
+              <span className="outline">of America</span>
+            </motion.h1>
 
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.0, delay: 0.3 }}
-              className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-md pt-1"
+              className="hero-description text-slate-300 pt-1"
             >
               Engineering Excellence. Structural Precision. Trusted Construction. BuildElite defines the new standard of US infrastructure through cinematic precision and relentless quality control.
             </motion.p>
@@ -306,10 +309,10 @@ export default function App() {
             >
               <button
                 onClick={() => scrollToSection(5)}
-                className="px-5 py-3 bg-white text-[#050810] font-sans font-bold text-[11px] sm:text-xs uppercase tracking-wider rounded transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] flex items-center gap-1.5 cursor-pointer"
+                className="btn-primary cursor-pointer flex items-center gap-1.5"
               >
                 Request Estimate
-                <ChevronRight className="w-3.5 h-3.5 text-[#050810]" />
+                <ChevronRight className="w-4 h-4 text-[#050A14] stroke-[3]" />
               </button>
               <button
                 onClick={() => scrollToSection(1)}
@@ -320,11 +323,11 @@ export default function App() {
             </motion.div>
           </div>
 
-          {/* Right Status Panel */}
-          <div className="col-span-12 md:col-span-3 flex flex-col space-y-6 md:space-y-8 mt-4 md:mt-0">
-            <div className="backdrop-blur-md bg-white/5 border-l-2 border-white/30 p-4 sm:p-5 space-y-3 rounded-r">
+          {/* Right Status Panel with glassmorphism */}
+          <div className="col-span-12 md:col-span-3 flex flex-col space-y-6 md:space-y-8 mt-4 md:mt-0 z-10 animate-fade-in">
+            <div className="glass-card p-5 space-y-3">
               <div className="text-[9px] uppercase tracking-widest text-slate-400 font-mono">Current Section</div>
-              <div className="text-xl font-bold font-mono">01 <span className="text-xs font-normal opacity-50 ml-1.5">/ 06</span></div>
+              <div className="text-xl font-bold font-mono">01 <span className="text-xs font-medium text-white/50 ml-1.5">/ 06</span></div>
               <div className="text-xs font-semibold border-b border-white/10 pb-1.5 text-slate-200">Hero Cinematic Intro</div>
               <p className="text-[8px] text-slate-500 leading-tight uppercase font-mono">
                 Next: Corporate Vision & Divisions
@@ -332,16 +335,16 @@ export default function App() {
             </div>
 
             <div className="space-y-4 hidden sm:block">
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="text-[8px] uppercase tracking-widest opacity-50 font-mono text-slate-300">Structural Trust Ratio</div>
-                <div className="h-[2px] w-full bg-slate-800">
-                  <div className="h-full bg-white w-[88%]"></div>
+                <div className="h-[3px] w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#F4B942] w-[88%] progress-fill"></div>
                 </div>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="text-[8px] uppercase tracking-widest opacity-50 font-mono text-slate-300">Safety Compliance</div>
-                <div className="h-[2px] w-full bg-slate-800">
-                  <div className="h-full bg-white w-full"></div>
+                <div className="h-[3px] w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#F4B942] w-full progress-fill"></div>
                 </div>
               </div>
             </div>
@@ -651,7 +654,7 @@ export default function App() {
                   <div className="flex-1 space-y-1">
                     <span className="text-[8px] font-mono text-slate-300 uppercase tracking-widest font-bold">AXIAL LOAD TOLERANCE GRID</span>
                     <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-white rounded-full animate-pulse" style={{ width: "88%" }} />
+                      <div className="h-full progress-fill rounded-full animate-pulse" style={{ width: "88%" }} />
                     </div>
                   </div>
                   <span className="text-[10px] font-mono font-bold text-white">88% Normal</span>

@@ -128,19 +128,21 @@ export default function ScrollVideoBG({ progress }: ScrollVideoBGProps) {
   }, [isLoaded, duration]);
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none select-none overflow-hidden bg-transparent z-0">
+    <div className="fixed inset-0 w-full h-full pointer-events-none select-none overflow-hidden bg-[#050A14] z-0 video-bg-container">
       
-      {/* Core scrubbing HTML5 Video - Fully colored & 100/100 visible with no filters or masks */}
+      {/* Core scrubbing HTML5 Video with SpaceX/Tesla grade filters and properties */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover opacity-100 will-change-transform transform-gpu"
-        src="https://cdn.jsdelivr.net/gh/senbla006-dev/video@main/7ac9be2d-6002-48ad-8616-9f68b0ad30a3.mp4"
+        className="hero-video absolute inset-0 w-full h-full object-cover opacity-100 will-change-transform transform-gpu"
         muted
         playsInline
         preload="auto"
         loop
+        poster="/src/assets/images/structural_steel_1780318362692.png"
         style={{ transform: "translate3d(0,0,0)" }}
-      />
+      >
+        <source src="https://cdn.jsdelivr.net/gh/senbla006-dev/video@main/7ac9be2d-6002-48ad-8616-9f68b0ad30a3.mp4" type="video/mp4" />
+      </video>
 
       {/* Cinematic Synchronization Status Indicators - minimized to ensure zero video interference */}
       {(!isLoaded || isBuffering) && (
