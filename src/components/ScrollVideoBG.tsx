@@ -35,8 +35,30 @@ export default function ScrollVideoBG({ progress }: ScrollVideoBGProps) {
     video.addEventListener("playing", handlePlaying);
     video.addEventListener("seeked", () => setIsBuffering(false));
 
-    // Force load the video
+    // Force load the video and prime the decoder for mobile scroll/scrubbing
     video.load();
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          video.pause();
+        })
+        .catch((err) => {
+          console.log("Mobile browser decoding prime deferred until scroll/interaction:", err);
+          // If auto-play playsInline fails, we can fall back to playing/pausing on first user touch/scroll
+          const primeMobile = () => {
+            video.play()
+              .then(() => {
+                video.pause();
+                window.removeEventListener("touchstart", primeMobile);
+                window.removeEventListener("scroll", primeMobile);
+              })
+              .catch(() => {});
+          };
+          window.addEventListener("touchstart", primeMobile, { passive: true });
+          window.addEventListener("scroll", primeMobile, { passive: true });
+        });
+    }
 
     return () => {
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);

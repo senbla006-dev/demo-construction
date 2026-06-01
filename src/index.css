@@ -205,13 +205,7 @@ body {
 
 @media (max-width: 768px) {
   .hero-video {
-    display: none !important;
-  }
-  .video-bg-container {
-    background-image: url("/src/assets/images/structural_steel_1780318362692.png") !important;
-    background-size: cover !important;
-    background-position: center !important;
-    filter: brightness(0.32) contrast(1.1) saturate(0.8) !important;
+    display: block !important;
   }
 }
 
