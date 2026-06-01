@@ -47,9 +47,29 @@ export default function ScrollVideoBG({ progress }: ScrollVideoBGProps) {
 
   // Keep target progress in a stable ref for high-frequency updates without tearing down the RAF loop
   const progressRef = useRef(progress);
+  const isSeekingEventRef = useRef(false);
+  const lastSeekTimeRef = useRef(0);
+
   useEffect(() => {
     progressRef.current = progress;
   }, [progress]);
+
+  // Handle seeking status events to guard CPU loads without polling layout-blocking attributes
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const onSeeking = () => { isSeekingEventRef.current = true; };
+    const onSeeked = () => { isSeekingEventRef.current = false; };
+
+    video.addEventListener("seeking", onSeeking);
+    video.addEventListener("seeked", onSeeked);
+
+    return () => {
+      video.removeEventListener("seeking", onSeeking);
+      video.removeEventListener("seeked", onSeeked);
+    };
+  }, []);
 
   // Smooth video position interpolation loop (RAF)
   useEffect(() => {
@@ -59,26 +79,42 @@ export default function ScrollVideoBG({ progress }: ScrollVideoBGProps) {
     let animationFrameId: number;
     let currentInterpTime = video.currentTime;
 
+    // Detect smartphone or low performance device dynamically to adapt algorithm
+    const isMobileDevice = /Mobi|Android|iPhone|iPad|Macintosh/i.test(navigator.userAgent) || 
+                          (window.innerWidth < 768);
+
     const updatePlayhead = () => {
-      // Map current progress target
+      const now = Date.now();
       const targetTime = progressRef.current * duration;
 
-      // Distance remaining to target playhead
-      const distance = Math.abs(targetTime - currentInterpTime);
+      if (isMobileDevice) {
+        // Mobile-optimized scrubbing: Skip heavy frame interpolation entirely to avoid frame drop cues.
+        // Directly apply the playhead position with a protective throttle of 45ms.
+        const delta = Math.abs(video.currentTime - targetTime);
+        if (!isSeekingEventRef.current && delta > 0.02 && (now - lastSeekTimeRef.current > 45)) {
+          const boundedTime = Math.max(0.005, Math.min(duration - 0.05, targetTime));
+          video.currentTime = boundedTime;
+          lastSeekTimeRef.current = now;
+        }
+      } else {
+        // Desktop-premium: Smoothly slide current playhead towards target time (LERP)
+        const distance = Math.abs(targetTime - currentInterpTime);
+        
+        // Dynamic speed based on distance
+        const lerpSpeed = Math.min(0.40, 0.12 + distance * 0.25);
+        currentInterpTime += (targetTime - currentInterpTime) * lerpSpeed;
 
-      // Accelerate the scroll reaction dynamically if scrolling quickly to avoid lag
-      const lerpSpeed = Math.min(0.35, 0.10 + distance * 0.2); 
-      currentInterpTime += (targetTime - currentInterpTime) * lerpSpeed;
+        if (distance < 0.005) {
+          currentInterpTime = targetTime;
+        }
 
-      // Ensure stable snapping to prevent microscopic floating updates
-      if (distance < 0.005) {
-        currentInterpTime = targetTime;
-      }
-
-      // Seek immediately if not currently in a seeking operation and delta is meaningful
-      if (!video.seeking && Math.abs(video.currentTime - currentInterpTime) > 0.01) {
-        const boundedTime = Math.max(0.005, Math.min(duration - 0.05, currentInterpTime));
-        video.currentTime = boundedTime;
+        // Apply seek to HTML5 video block only if ready, minimizing excessive keyframe loads
+        const timeDiff = Math.abs(video.currentTime - currentInterpTime);
+        if (!isSeekingEventRef.current && timeDiff > 0.015 && (now - lastSeekTimeRef.current > 24)) {
+          const boundedTime = Math.max(0.005, Math.min(duration - 0.05, currentInterpTime));
+          video.currentTime = boundedTime;
+          lastSeekTimeRef.current = now;
+        }
       }
 
       animationFrameId = requestAnimationFrame(updatePlayhead);
@@ -98,7 +134,7 @@ export default function ScrollVideoBG({ progress }: ScrollVideoBGProps) {
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover opacity-100 will-change-transform transform-gpu"
-        src="https://cdn.jsdelivr.net/gh/senbla006-dev/video@main/a437adcf-91e0-40d8-a45c-c92bc1aadfa7.mp4"
+        src="https://cdn.jsdelivr.net/gh/senbla006-dev/video@main/7ac9be2d-6002-48ad-8616-9f68b0ad30a3.mp4"
         muted
         playsInline
         preload="auto"
