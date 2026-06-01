@@ -1,0 +1,6 @@
+{
+  "name": "BuildElite Construction",
+  "description": "Premium cinematic scroll-driven website for a high-end American construction company, featuring an interactive AI-powered project estimate counselor and immersive scrollytelling controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
